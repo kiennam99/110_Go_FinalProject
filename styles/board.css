@@ -1,20 +1,28 @@
 .board {
-    border: 10px solid black;
+    border: 2px solid black;
     display: grid;
     grid-template-columns: repeat(8,1fr);
     grid-template-rows: repeat(8,1fr);
-    
+    /* background: #444; */
 }
 
 
 .square {
     font-size: 2vmin;
-    /* display: flex;
+    display: flex;
     justify-content: center;
-    align-items: center; */
+    align-items: center;
 }
 
 .square.black {
-    background: black;
+    background: #56BC58;
     color: white;
+
 }
+
+.square img {
+    width: 90%;
+    /* height: 90% */
+}
+
+
