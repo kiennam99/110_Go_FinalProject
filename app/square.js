@@ -9,13 +9,17 @@ export default class Square {
         this.index = index;
         this.element = document.createElement('div');
         this.element.classList.add('square');
+ 
         if(isBlack) {
             this.element.classList.add('black');
         }
         // this.element.textContent = `${file}${rank}`;
         this.element.setAttribute('data-rank',rank);
         this.element.setAttribute('data-file',file);
+        
         this.update()
+        
+
     }
 
     update() {
@@ -27,6 +31,11 @@ export default class Square {
                 
                 const img = new Image();
                 img.src = image;
+                img.draggable="true";
+                img.id =  `${current.color}${current.type}${this.index}`;
+                img.classList.add('piece');
+                img.setAttribute('color',current.color);
+                img.setAttribute('type',current.type)
                 this.element.append(img);
             } else {
                 // this.element.textContent = current.type;
@@ -34,8 +43,6 @@ export default class Square {
             // console.log(current);
             // this.element.textContent= current.type;
         } 
-       
-    
     }
 
 }

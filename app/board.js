@@ -57,5 +57,53 @@ export default class Board {
     getSquare(index) { 
         return this.board[index];
     }
+    
 
 }
+
+document.addEventListener("dragstart",function(event){
+    event.dataTransfer.setData("img",event.target.id);
+    // event.dataTransfer.setData("index",event.target.index);
+
+    console.log(event.target.id);
+});
+document.addEventListener("dragend",function(event){
+    // event.dataTransfer.setData("")
+});
+
+document.addEventListener("drop",function drop(event){
+    event.preventDefault();
+    
+    if(event.target.className == "square" || event.target.className == "square black" ) {
+        // var index = event.dataTransfer.getData("index");
+        var data = event.dataTransfer.getData("img");
+        var tar = document.getElementById(data);
+
+        // console.log(document.getElementById(data));
+        console.log(tar.id)
+        event.target.append(tar);
+        
+    }
+    if( event.target.classList.contains('piece')) {
+        var data = event.dataTransfer.getData("img");
+        var el = event.target;
+        var tar = document.getElementById(data);
+
+        console.log(tar.getAttribute('color'))
+        console.log(el);
+        
+        if(el != tar && el.getAttribute('color')!= tar.getAttribute('color')){
+            console.log(tar.id);
+            el = event.target.parentNode;
+            event.target.remove();
+            // var newimg = 
+            el.append(tar);
+        }
+
+     
+    }
+    
+});
+document.addEventListener("dragover", function allowdrop(event){
+    event.preventDefault();
+});
