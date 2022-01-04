@@ -3,7 +3,9 @@
 import {Chess} from 'https://cdn.skypack.dev/chess.js'
 import Square from "./square.js";
 
-// console.log(Chess);
+let socket = new WebSocket;
+let moveAvailable = new Boolean;
+
 
 
 const files = ['A','B','C','D','E','F','G','H'];
