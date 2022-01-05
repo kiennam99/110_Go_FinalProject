@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gorilla/websocket"
@@ -43,11 +44,20 @@ func wshandle(w http.ResponseWriter, r *http.Request) {
 			}
 		} else {
 			err = conn.WriteMessage(mt, []byte{'0'})
+
 			if err != nil {
 				log.Println("write failed:", err)
 				break
 			}
+
 		}
+	}
+
+	if game.winner() != 3 {
+		// mt,_,_ := conn.ReadMessage()
+		err = conn.WriteMessage(websocket.TextMessage, []byte{'3'})
+		a := strconv.Itoa(game.winner() + 5)
+		err = conn.WriteMessage(websocket.TextMessage, []byte(a))
 	}
 }
 

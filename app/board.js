@@ -5,6 +5,7 @@ import Square from "./square.js";
 
 let socket = new WebSocket("ws://localhost:8899/chess");
 let moveAvailable = new Boolean(false);
+let ending = new Boolean(false);
 
 socket.onopen = function() {
     console.log("Status: Connected\n");
@@ -22,7 +23,7 @@ socket.onmessage = function (e) {
     } else {
         moveAvailable = false
     }
-
+    gameend(e.data)
     console.log(moveAvailable);
 };
 
@@ -72,12 +73,19 @@ export default class Board {
 
         // this.chess.reset()
         // console.log(this.chess.board().flat());
-
+        var res = document.getElementById("result");
+        var toadd = document.createElement("p")
+        toadd.textContent = "White Turn";
+        res.append(toadd);
+        // console.log(res.element);
+        // var toadd = res.element.element;
+        // console.log(toadd);
+         
     }
     getSquare(index) { 
         return this.board[index];
     }
-    
+
 
 }
 
@@ -91,6 +99,9 @@ document.addEventListener("dragend",function(event){
 
 document.addEventListener("drop",function drop(event){
     event.preventDefault();
+    var data = event.dataTransfer.getData("img");
+    var tar = document.getElementById(data);
+
     
     if(event.target.className == "square" || event.target.className == "square black" ) {
         var data = event.dataTransfer.getData("img");
@@ -101,7 +112,28 @@ document.addEventListener("drop",function drop(event){
         socket.send(startPos + " " + endPos);
 
         setTimeout(function() {
-            if (moveAvailable) {
+            if (moveAvailable ) {
+                if (tar.getAttribute('color') == "w") {
+                    var res = document.getElementById("result");
+                    while (res.firstChild) {
+                        res.removeChild(res.firstChild); 
+                    }
+                    var toadd = document.createElement("p");
+                    toadd.textContent = "Black Turn"
+                    res.append(toadd); 
+                } else {
+                    var res = document.getElementById("result");
+                    while (res.firstChild) {
+                        res.removeChild(res.firstChild); 
+                    }
+                    var toadd = document.createElement("p");
+                    toadd.textContent = "White Turn"
+                    res.append(toadd); 
+                }
+            
+                event.target.append(tar);
+            }
+            if (ending ) {
                 event.target.append(tar);
             }
         }, 100)
@@ -113,14 +145,39 @@ document.addEventListener("drop",function drop(event){
 
         //console.log(tar.getAttribute('color'))
         //console.log(el);
-
+ 
         var startPos = tar.parentElement.getAttribute('position')
         var endPos = event.target.parentElement.getAttribute('position')
         socket.send(startPos + " " + endPos);
         
         if(el != tar && el.getAttribute('color')!= tar.getAttribute('color')){
             setTimeout(function() {
-                if (moveAvailable) {
+                if (moveAvailable ) {
+                    if (tar.getAttribute('color') == "w") {
+                        var res = document.getElementById("result");
+                        while (res.firstChild) {
+                            res.removeChild(res.firstChild); 
+                        }
+                        var toadd = document.createElement("p");
+                        toadd.textContent = "Black Turn"
+                        res.append(toadd); 
+                    } else {
+                        var res = document.getElementById("result");
+                        while (res.firstChild) {
+                            res.removeChild(res.firstChild); 
+                        }
+                        var toadd = document.createElement("p");
+                        toadd.textContent = "White Turn"
+                        res.append(toadd); 
+                    }
+
+
+                    el = event.target.parentNode;
+                    event.target.remove();
+                    // var newimg = 
+                    el.append(tar);
+                }
+                if (ending) {
                     el = event.target.parentNode;
                     event.target.remove();
                     // var newimg = 
@@ -128,11 +185,31 @@ document.addEventListener("drop",function drop(event){
                 }
             }, 100)
         }
-
-     
     }
     
 });
 document.addEventListener("dragover", function allowdrop(event){
     event.preventDefault();
 });
+
+function gameend(color) {
+    
+    var res = document.getElementById("result");
+    var toadd = document.createElement("p");
+
+    if (color == '5') {
+        toadd.textContent = `White win`;
+        ending = true;
+    } else if (color == '6') {
+        toadd.textContent = `Black win`;
+        ending = true;
+    } else {
+        ending=false;
+        return
+    }
+    while(res.firstChild){
+        res.removeChild(res.firstChild);
+    }
+    res.append(toadd);
+    
+};

@@ -16,3 +16,11 @@ body {
     align-items: center;
     
 }
+
+#result {
+    font-size: 30px;
+    border: 2px solid black;
+    position:fixed;
+    left: 10%;
+    
+}
