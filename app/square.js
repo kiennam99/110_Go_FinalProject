@@ -16,7 +16,8 @@ export default class Square {
         // this.element.textContent = `${file}${rank}`;
         this.element.setAttribute('data-rank',rank);
         this.element.setAttribute('data-file',file);
-        
+        this.element.setAttribute('position', `${file}${rank}`)
+
         this.update()
         
 
@@ -35,7 +36,7 @@ export default class Square {
                 img.id =  `${current.color}${current.type}${this.index}`;
                 img.classList.add('piece');
                 img.setAttribute('color',current.color);
-                img.setAttribute('type',current.type)
+                img.setAttribute('type',current.type);
                 this.element.append(img);
             } else {
                 // this.element.textContent = current.type;

@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	//"strings"
-)
+//"strings"
 
 type Chess struct {
 	chess_type string
@@ -297,20 +294,20 @@ func (gm *Game) promotion(x, y int, name string) bool {
 	return true
 }
 
-func (gm Game) print() {
-	fmt.Printf("   |")
+func (gm Game) print(function func(string, ...interface{})) {
+	function("   |")
 	for i := 0; i < 8; i++ {
-		fmt.Printf(" %7d |", i)
+		function(" %7d |", i)
 	}
-	fmt.Printf("\n")
+	function("\n")
 	for id1, i := range gm.board {
-		fmt.Printf("%d  |", id1)
+		function("%d  |", id1)
 		for _, j := range i {
-			fmt.Printf(" %7s |", j.chess_type)
+			function(" %7s |", j.chess_type)
 		}
-		fmt.Printf("\n")
+		function("\n")
 	}
-	fmt.Printf("----------------------------------------------------------------------------------------------------\n")
+	function("----------------------------------------------------------------------------------------------------\n")
 }
 
 func (gm Game) winner() int {
@@ -348,7 +345,7 @@ func main() {
 		//fmt.Scanln(&x1, &y1, &x2, &y2)
 		fmt.Scanln(&cor1, &cor2)
 		if gm.move(cor1, cor2) {
-			gm.print()
+			gm.print(fmt.Printf)
 		} else {
 			fmt.Printf("Invalid operation\n")
 		}

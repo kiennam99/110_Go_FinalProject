@@ -3,10 +3,28 @@
 import {Chess} from 'https://cdn.skypack.dev/chess.js'
 import Square from "./square.js";
 
-let socket = new WebSocket;
-let moveAvailable = new Boolean;
+let socket = new WebSocket("ws://localhost:8899/chess");
+let moveAvailable = new Boolean(false);
 
+socket.onopen = function() {
+    console.log("Status: Connected\n");
+};
 
+socket.onmessage = function (e) {
+    if (e.data == "2") {
+        console.log("HEY")
+    }
+
+    if (e.data == "1") {
+        moveAvailable = true;
+    } else if (e.data == "0") {
+        moveAvailable = false;
+    } else {
+        moveAvailable = false
+    }
+
+    console.log(moveAvailable);
+};
 
 const files = ['A','B','C','D','E','F','G','H'];
 
@@ -66,8 +84,6 @@ export default class Board {
 document.addEventListener("dragstart",function(event){
     event.dataTransfer.setData("img",event.target.id);
     // event.dataTransfer.setData("index",event.target.index);
-
-    console.log(event.target.id);
 });
 document.addEventListener("dragend",function(event){
     // event.dataTransfer.setData("")
@@ -77,29 +93,40 @@ document.addEventListener("drop",function drop(event){
     event.preventDefault();
     
     if(event.target.className == "square" || event.target.className == "square black" ) {
-        // var index = event.dataTransfer.getData("index");
         var data = event.dataTransfer.getData("img");
         var tar = document.getElementById(data);
 
-        // console.log(document.getElementById(data));
-        console.log(tar.id)
-        event.target.append(tar);
-        
+        var startPos = tar.parentElement.getAttribute('position')
+        var endPos = event.target.getAttribute('position')
+        socket.send(startPos + " " + endPos);
+
+        setTimeout(function() {
+            if (moveAvailable) {
+                event.target.append(tar);
+            }
+        }, 100)
     }
     if( event.target.classList.contains('piece')) {
         var data = event.dataTransfer.getData("img");
         var el = event.target;
         var tar = document.getElementById(data);
 
-        console.log(tar.getAttribute('color'))
-        console.log(el);
+        //console.log(tar.getAttribute('color'))
+        //console.log(el);
+
+        var startPos = tar.parentElement.getAttribute('position')
+        var endPos = event.target.parentElement.getAttribute('position')
+        socket.send(startPos + " " + endPos);
         
         if(el != tar && el.getAttribute('color')!= tar.getAttribute('color')){
-            console.log(tar.id);
-            el = event.target.parentNode;
-            event.target.remove();
-            // var newimg = 
-            el.append(tar);
+            setTimeout(function() {
+                if (moveAvailable) {
+                    el = event.target.parentNode;
+                    event.target.remove();
+                    // var newimg = 
+                    el.append(tar);
+                }
+            }, 100)
         }
 
      

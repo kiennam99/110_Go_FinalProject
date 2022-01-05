@@ -21,6 +21,7 @@ func wshandle(w http.ResponseWriter, r *http.Request) {
 	defer conn.Close()
 
 	game.init(5, "A", "B")
+	log.Println("game init")
 
 	for game.winner() == 3 {
 		mt, msg, err := conn.ReadMessage()
@@ -31,6 +32,8 @@ func wshandle(w http.ResponseWriter, r *http.Request) {
 
 		cor1, cor2 := handleInput(msg)
 		moveAvailable := game.move(cor1, cor2)
+
+		game.print(log.Printf)
 
 		if moveAvailable {
 			err = conn.WriteMessage(mt, []byte{'1'})
@@ -50,8 +53,6 @@ func wshandle(w http.ResponseWriter, r *http.Request) {
 
 func handleInput(msg []byte) (string, string) {
 	input := string(msg) // <cor1 cor2>
-	log.Println(msg)
-	log.Println(input)
 	inputArr := strings.Split(input, " ")
 
 	return inputArr[0], inputArr[1]
